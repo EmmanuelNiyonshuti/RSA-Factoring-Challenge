@@ -1,3 +1,43 @@
-#!/usr/bin/bash
+#!/usr/bin/env python3
+"""
+This script reads integers from a file,
+factorizes them, and prints the factors
+"""
+import sys
+from math import isqrt
 
-python3 factors.py "$@"
+def factorize(n):
+    """
+    Factorize the integer n.
+    Returns a i, n//i where i is the smallest factor of n.
+    If n is prime, returns (n, 1).
+    """
+    if n < 2:
+        return None
+    for i in range(2, isqrt(n) + 1):
+        if n % i == 0:
+            return i, n // i
+    return n, 1
+
+def process_file(fn):
+    """
+    Read integers from the file,
+    factorize them, and print the results.
+    """
+    try:
+        with open(fn, "r") as f:
+            for line in f:
+                n = int(line.strip())
+                p, q = factorize(n)
+                print(f"{n}={q}*{p}")
+    except FileNotFoundError:
+        print(f"Error {fn} not found")
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print("Usage: ./factors <file>")
+        sys.exit(1)
+    filename = sys.argv[1]
+    process_file(filename)
